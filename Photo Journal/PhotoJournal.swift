@@ -8,7 +8,7 @@
 
 import Foundation
 
-final class PhotosJournalModel {
+final class PhotoJournalModel {
     private static let filename = "PhotoJournalList.plist"
     private init() {}
     
@@ -47,6 +47,11 @@ final class PhotosJournalModel {
         } catch {
             print("property list encoding error: \(error)")
         }
+    }
+    
+    static func delete(index: Int) {
+     photos.remove(at: index)
+        save()
     }
     
 

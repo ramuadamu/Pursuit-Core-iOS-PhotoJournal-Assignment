@@ -33,18 +33,45 @@ class ViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         loadPhotosFromModel()
-        photosCollectionView.reloadData()
         
     }
     
     private func loadPhotosFromModel() {
-        self.photos = PhotosJournalModel.getPhoto()
+        self.photos = PhotoJournalModel.getPhoto()
     }
-    @IBAction func addButton(_ sender: UIBarButtonItem) {
+    
+    @IBAction func forShareButton(_ sender: UIButton) {
+        let alert = UIAlertController(title: "options", message: "make a selection", preferredStyle: .actionSheet)
+        let edit = UIAlertAction(title: "edit", style: .default){_ in
+            self.setView()
+            print("clicked")
+        }
+        let delete = UIAlertAction(title: "delete", style: .destructive) { (action) in
+           PhotoJournalModel.delete(index: sender.tag)
+            self.loadPhotosFromModel()
+            
+        }
+        let share = UIAlertAction(title: "share", style: .default, handler: nil)
+        let cancel = UIAlertAction(title: "cancel", style: .cancel, handler: nil)
+        alert.addAction(edit)
+        alert.addAction(delete)
+        alert.addAction(share)
+        alert.addAction(cancel)
+        present(alert, animated: true, completion: nil)
+        
+    }
+    
+    func setView(){
         let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
         let viewController = storyBoard.instantiateViewController(withIdentifier: "photoView") as! PhotoViewController
         viewController.modalPresentationStyle = .currentContext
         present(viewController, animated: true, completion: nil)
+        
+    }
+    
+    
+    @IBAction func addButton(_ sender: UIBarButtonItem) {
+       setView()
     }
 }
 
@@ -58,6 +85,7 @@ extension ViewController: UICollectionViewDataSource {
         let photo = photos[indexPath.row]
         cell.photoDate.text = photo.createdAt
         cell.photoDescription.text = photo.description
+        cell.optionButton.tag = indexPath.row
         cell.photoImageView.image = UIImage(data:photo.imageData )
         return cell
     }

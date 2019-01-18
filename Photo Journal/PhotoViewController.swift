@@ -15,6 +15,7 @@ class PhotoViewController: UIViewController {
     
     @IBOutlet weak var imageView: UIImageView!
     
+    @IBOutlet weak var resignButton: UIButton!
     
     @IBOutlet weak var imageDescription: UITextView!
     
@@ -24,15 +25,20 @@ class PhotoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.resignButton.backgroundColor = .clear
         setupImagePickerViewController()
 
        //updateUI()
     }
     
+    
+    
     @IBAction func cancelButton(_ sender: UIBarButtonItem) {
+        dismiss(animated: true, completion: nil)
     }
     
     @IBAction func saveButton(_ sender: UIBarButtonItem) {
+        
         guard let text = imageDescription.text else {return}
     
         let date = Date()
@@ -41,7 +47,7 @@ class PhotoViewController: UIViewController {
         let modifiedTimestamp = isoDateFormatter.string(from: date)
         if let imageData = imageView.image?.jpegData(compressionQuality: 0.5) {
             let photoJournal = PhotoJournal.init(createdAt: modifiedTimestamp, imageData: imageData, description: text)
-            PhotosJournalModel.addPhotos(photo: photoJournal)
+            PhotoJournalModel.addPhotos(photo: photoJournal)
         }
         dismiss(animated: true, completion: nil)
     }
@@ -59,6 +65,13 @@ class PhotoViewController: UIViewController {
     private func showImagePickerController() {
         present(imagePickerViewcontroller, animated: true, completion: nil)
 }
+    
+
+    
+    @IBAction func resignButtonPressed(_ sender: UIButton) {
+        imageDescription.resignFirstResponder()
+    }
+    
 
     @IBAction func photoLibraryButtonPressed(_ sender: UIBarButtonItem) {
         imagePickerViewcontroller.sourceType = .photoLibrary
@@ -74,7 +87,7 @@ class PhotoViewController: UIViewController {
         // PhotoJournal: createdAt, description, imageData
         if let imageData = image.jpegData(compressionQuality: 0.5) {
             let photoJournal = PhotoJournal.init(createdAt: "no date", imageData: imageData, description: "cool wallpaper")
-            PhotosJournalModel.addPhotos(photo: photoJournal)
+            PhotoJournalModel.addPhotos(photo: photoJournal)
         }
     }
 }
