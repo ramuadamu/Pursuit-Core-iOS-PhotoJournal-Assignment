@@ -44,14 +44,16 @@ class ViewController: UIViewController {
         let alert = UIAlertController(title: "options", message: "make a selection", preferredStyle: .actionSheet)
         let edit = UIAlertAction(title: "edit", style: .default){_ in
             self.setView()
-            print("clicked")
+            
         }
         let delete = UIAlertAction(title: "delete", style: .destructive) { (action) in
            PhotoJournalModel.delete(index: sender.tag)
             self.loadPhotosFromModel()
             
         }
-        let share = UIAlertAction(title: "share", style: .default, handler: nil)
+        let share = UIAlertAction(title: "share", style: .default) { (action) in
+            self.sharePhoto(index: sender.tag)
+        }
         let cancel = UIAlertAction(title: "cancel", style: .cancel, handler: nil)
         alert.addAction(edit)
         alert.addAction(delete)
@@ -66,6 +68,13 @@ class ViewController: UIViewController {
         let viewController = storyBoard.instantiateViewController(withIdentifier: "photoView") as! PhotoViewController
         viewController.modalPresentationStyle = .currentContext
         present(viewController, animated: true, completion: nil)
+        
+    }
+    
+    func sharePhoto(index: Int) {
+        let imageToShare = photos[index]
+        let activityViewController = UIActivityViewController(activityItems: [imageToShare], applicationActivities: nil)
+        present(activityViewController, animated: true, completion: nil)
         
     }
     
